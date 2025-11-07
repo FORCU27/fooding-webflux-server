@@ -1,1 +1,3 @@
 rootProject.name = 'fooding-webflux'
+include 'api'
+include 'core'
