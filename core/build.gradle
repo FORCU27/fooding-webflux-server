@@ -18,10 +18,13 @@ repositories {
 
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	// 추후 수정 ( 현재는 인메모리 형식 )
+	//implementation 'io.asyncer:r2dbc-mysql:1.0.5'
+	runtimeOnly 'io.r2dbc:r2dbc-h2'
 }
 
 tasks.named('test') {

@@ -1,0 +1,14 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb?options=DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    pool:
+      enabled: true
+      initial-size: 10
+      max-size: 20
+      max-idle-time: 30m
+
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
