@@ -25,6 +25,12 @@ dependencies {
 	// 추후 수정 ( 현재는 인메모리 형식 )
 	//implementation 'io.asyncer:r2dbc-mysql:1.0.5'
 	runtimeOnly 'io.r2dbc:r2dbc-h2'
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0"
+	implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	implementation "com.auth0:java-jwt:4.2.1"
 }
 
 tasks.named('test') {
