@@ -1,5 +1,4 @@
-package fooding.im.core.global;
-
+package fooding.im.core.global.config;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -7,9 +6,13 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+
 
 @SecurityScheme(
         name = "Bearer Authentication",
@@ -30,15 +33,15 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("Fooding WebFlux API") // API의 제목
-                .description("Fooding API") // API에 대한 설명
-                .version("1.0.2"); // API의 버전
+                .description("Fooding WebFlux API") // API에 대한 설명
+                .version("1.0.0"); // API의 버전
     }
 
     @Bean
     public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()
                 .group("Admin API")
-                .packagesToScan("im.fooding.app.controller.admin")
+                .packagesToScan("fooding.im.api.controller.admin")
                 .build();
     }
 
@@ -46,7 +49,7 @@ public class SwaggerConfig {
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
                 .group("User API")
-                .packagesToScan("im.fooding.app.controller.user")
+                .packagesToScan("fooding.im.api.controller.user")
                 .build();
     }
 
@@ -54,7 +57,7 @@ public class SwaggerConfig {
     public GroupedOpenApi posApi() {
         return GroupedOpenApi.builder()
                 .group("Pos API")
-                .packagesToScan("im.fooding.app.controller.pos")
+                .packagesToScan("fooding.im.api.controller.pos")
                 .build();
     }
 
@@ -62,7 +65,7 @@ public class SwaggerConfig {
     public GroupedOpenApi appApi() {
         return GroupedOpenApi.builder()
                 .group("App API")
-                .packagesToScan("im.fooding.app.controller.app")
+                .packagesToScan("fooding.im.api.controller.app")
                 .build();
     }
 
@@ -70,7 +73,7 @@ public class SwaggerConfig {
     public GroupedOpenApi ceoApi() {
         return GroupedOpenApi.builder()
                 .group("Ceo API")
-                .packagesToScan("im.fooding.app.controller.ceo")
+                .packagesToScan("fooding.im.api.controller.ceo")
                 .build();
     }
 
@@ -78,7 +81,7 @@ public class SwaggerConfig {
     public GroupedOpenApi authApi() {
         return GroupedOpenApi.builder()
                 .group("Auth API")
-                .packagesToScan("im.fooding.app.controller.auth")
+                .packagesToScan("fooding.im.api.controller.auth")
                 .build();
     }
 
@@ -86,7 +89,7 @@ public class SwaggerConfig {
     public GroupedOpenApi fileApi() {
         return GroupedOpenApi.builder()
                 .group("File API")
-                .packagesToScan("im.fooding.app.controller.file")
+                .packagesToScan("fooding.im.api.controller.file")
                 .build();
     }
 
@@ -94,8 +97,7 @@ public class SwaggerConfig {
     public GroupedOpenApi api() {
         return GroupedOpenApi.builder()
                 .group("API")
-                .packagesToScan("im.fooding.app.controller")
+                .packagesToScan("fooding.im.api.controller")
                 .build();
     }
 }
-
