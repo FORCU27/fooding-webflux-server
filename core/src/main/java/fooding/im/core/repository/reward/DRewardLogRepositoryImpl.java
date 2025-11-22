@@ -109,13 +109,36 @@ public class DRewardLogRepositoryImpl implements DRewardLogRepository{
 
     @Override
     public Mono<Long> listCount(String searchString, Long storeId, String phoneNumber, RewardStatus status) {
-        StringBuilder countQuery = new StringBuilder("SELECT COUNT(*) FROM reward_log WHERE deleted=false");
+        // SQL builder
+        StringBuilder baseQuery = new StringBuilder("FROM reward_log WHERE deleted=false");
 
-        if( storeId != null ) countQuery.append(" AND store_id = :storeId");
-        if( phoneNumber != null ) countQuery.append(" AND phone_number = :phoneNumber");
-        if( status != null ) countQuery.append(" AND status = :status");
+        // 파라미터 저장용
+        Map<String, Object> params = new HashMap<>();
 
-        return databaseClient.sql( countQuery.toString() )
-                .map( ( row, metadata ) -> row.get( 0, Long.class )).one();
+        if (storeId != null && storeId != 0) {
+            baseQuery.append(" AND store_id = :storeId");
+            params.put("storeId", storeId);
+        }
+        if (phoneNumber != null && phoneNumber.length() == 11 ) {
+            baseQuery.append(" AND phone_number = :phoneNumber");
+            params.put("phoneNumber", phoneNumber);
+        }
+        if (status != null) {
+            baseQuery.append(" AND status = :status");
+            params.put("status", status.getName());
+        }
+
+        // 🔹 count 쿼리
+        String countSql = "SELECT COUNT(*) " + baseQuery;
+
+        DatabaseClient.GenericExecuteSpec countSpec = databaseClient.sql(countSql);
+
+        return countSpec
+                .map((row, metadata) -> {
+                    Long t = row.get(0, Long.class);
+                    System.out.println( t );
+                    return t;
+                })
+                .one();
     }
 }

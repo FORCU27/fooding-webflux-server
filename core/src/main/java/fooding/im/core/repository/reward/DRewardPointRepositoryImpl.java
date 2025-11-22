@@ -1,7 +1,6 @@
 package fooding.im.core.repository.reward;
 
-import fooding.im.core.domain.reward.RewardLog;
-import fooding.im.core.domain.reward.RewardPoint;
+import fooding.im.core.domain.reward.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,45 +23,65 @@ public class DRewardPointRepositoryImpl implements DRewardPointRepository {
             Long storeId,
             String phoneNumber
     ) {
-        StringBuilder countQuery = new StringBuilder("SELECT COUNT(*) FROM reward_point WHERE deleted=false");
-        StringBuilder query = new StringBuilder("SELECT * FROM reward_point WHERE deleted=false");
+        StringBuilder baseQuery = new StringBuilder("FROM reward_point WHERE deleted=false");
 
-        DatabaseClient.GenericExecuteSpec spec = databaseClient.sql(query.toString());
+        Map<String, Object> params = new HashMap<>();
 
-        if( storeId != null ) {
-            query.append(" AND store_id = :storeId");
-            countQuery.append(" AND store_id = :storeId");
-            spec = spec.bind("storeId", storeId);
+        if (storeId != null && storeId != 0) {
+            baseQuery.append(" AND store_id = :storeId");
+            params.put("storeId", storeId);
         }
-        if( phoneNumber != null ){
-            query.append(" AND phone_number = :phoneNumber");
-            countQuery.append(" AND phone_number = :phoneNumber");
-            spec = spec.bind("phoneNumber", phoneNumber);
+        if (phoneNumber != null && phoneNumber.length() == 11 ) {
+            baseQuery.append(" AND phone_number = :phoneNumber");
+            params.put("phoneNumber", phoneNumber);
         }
-        query.append(" LIMIT :limit OFFSET :offset");
-        spec = spec
-                .bind("limit", pageable.getPageSize())
-                .bind("offset", pageable.getOffset());
 
-        Flux<RewardPoint> dataFlux = spec
-                .map( ( row, metedata ) -> {
+        // 🔹 전체 목록용 query
+        String dataSql = "SELECT * " + baseQuery +
+                " LIMIT :limit OFFSET :offset";
+
+        // limit/offset도 파라미터로 추가
+        params.put("limit", pageable.getPageSize());
+        params.put("offset", pageable.getOffset());
+
+        // 🔹 count 쿼리
+        String countSql = "SELECT COUNT(*) " + baseQuery;
+
+        DatabaseClient.GenericExecuteSpec dataSpec = databaseClient.sql(dataSql);
+
+        for (var entry : params.entrySet()) {
+            dataSpec = dataSpec.bind(entry.getKey(), entry.getValue());
+        }
+
+        Flux<RewardPoint> dataFlux = dataSpec
+                .map((row, metadata) -> {
                     RewardPoint rewardPoint = new RewardPoint();
-                    rewardPoint.setId( row.get("id", Long.class ) );
-                    rewardPoint.setStoreId( row.get("store_id", Long.class ) );
-                    rewardPoint.setPhoneNumber( row.get("phone_number", String.class ) );
-                    rewardPoint.setUserId( row.get("user_id", Long.class ) );
-                    rewardPoint.setPoint( row.get("point", Integer.class ) );
-                    rewardPoint.setMemo( row.get("memo", String.class ) );
-
+                    rewardPoint.setId(row.get("id", Long.class));
+                    rewardPoint.setStoreId(row.get("store_id", Long.class));
+                    rewardPoint.setPhoneNumber(row.get("phone_number", String.class));
+                    rewardPoint.setUserId(row.get("user_id", Long.class));
+                    rewardPoint.setPoint(row.get("point", Integer.class));
+                    rewardPoint.setMemo(row.get("memo", String.class));
                     return rewardPoint;
-                }).all();
-        Mono<Long> totalCountMono = databaseClient.sql( countQuery.toString() )
-                .map( ( row, metadata ) -> row.get( 0, Long.class )).one();
-        return Mono.zip( dataFlux.collectList(), totalCountMono)
-                .map( tuple -> {
-                    List<RewardPoint> content = tuple.getT1();
-                    long totalCount = tuple.getT2();
-                    return new PageImpl<>( content, pageable, totalCount );
-                } );
+                })
+                .all();
+        DatabaseClient.GenericExecuteSpec countSpec = databaseClient.sql(countSql);
+
+        for (var entry : params.entrySet()) {
+            if (!entry.getKey().equals("limit") && !entry.getKey().equals("offset")) {
+                countSpec = countSpec.bind(entry.getKey(), entry.getValue());
+            }
+        }
+
+        Mono<Long> countMono = countSpec
+                .map((row, metadata) -> {
+                    Long t = row.get(0, Long.class);
+                    System.out.println( t );
+                    return t;
+                })
+                .one();
+
+        return Mono.zip(dataFlux.collectList(), countMono)
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 }

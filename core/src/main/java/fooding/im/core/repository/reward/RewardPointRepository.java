@@ -1,7 +1,6 @@
 package fooding.im.core.repository.reward;
 
 import fooding.im.core.domain.reward.RewardPoint;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
