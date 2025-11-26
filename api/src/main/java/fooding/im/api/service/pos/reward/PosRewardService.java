@@ -1,11 +1,15 @@
 package fooding.im.api.service.pos.reward;
 
+import fooding.im.api.dto.request.pos.reward.CreatePosRewardRequest;
 import fooding.im.api.dto.request.pos.reward.GetPosRewardRequest;
 import fooding.im.api.dto.request.pos.reward.UpdateRewardLogRequest;
 import fooding.im.api.dto.response.pos.reward.GetPosRewardResponse;
 import fooding.im.core.common.PageInfo;
 import fooding.im.core.common.PageResponse;
+import fooding.im.core.domain.reward.RewardChannel;
+import fooding.im.core.domain.reward.RewardPoint;
 import fooding.im.core.domain.reward.RewardStatus;
+import fooding.im.core.domain.reward.RewardType;
 import fooding.im.core.service.reward.RewardLogService;
 import fooding.im.core.service.reward.RewardService;
 import lombok.RequiredArgsConstructor;

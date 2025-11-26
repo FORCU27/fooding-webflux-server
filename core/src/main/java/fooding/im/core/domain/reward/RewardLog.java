@@ -6,6 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -53,10 +55,16 @@ public class RewardLog extends BaseEntity {
         this.type = type;
         this.channel = channel;
         this.memo = memo;
+        super.createdAt = LocalDateTime.now();
+        super.updatedAt = LocalDateTime.now();
     }
 
     public void updateStatus( RewardStatus status ){
         this.status = status;
+        super.updatedAt = LocalDateTime.now();
     }
-    public void updateMemo( String memo ) { this.memo = memo; }
+    public void updateMemo( String memo ) {
+        this.memo = memo;
+        super.updatedAt = LocalDateTime.now();
+    }
 }
