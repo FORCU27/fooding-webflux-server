@@ -26,24 +26,24 @@ public class RewardService {
         return repository.list( searchString, pageable, storeId, phoneNumber );
     }
 
-    public Mono<Void> create( Long storeId, String phoneNumber, int point, Long userId ){
+    public Mono<RewardPoint> create( Long storeId, String phoneNumber, int point, Long userId ){
         RewardPoint reward = RewardPoint.builder()
                 .storeId( storeId )
                 .phoneNumber( phoneNumber )
                 .point( point )
-                .userId( userId )
+                .userId( userId != 0 ? userId : null )
                 .build();
-        return repository.save( reward ).then();
+        return repository.save( reward );
     }
 
-    public Mono<Void> addPoint( String phoneNumber, Long storeId, int point ){
+    public Mono<RewardPoint> addPoint( String phoneNumber, Long storeId, int point ){
         Mono<RewardPoint> rewardPointMono = repository.findByPhoneNumberAndStoreIdAndDeletedIsFalse( phoneNumber, storeId ).switchIfEmpty(
                 Mono.error( new ApiException(ErrorCode.REWARD_NOT_FOUND))
         );
         return rewardPointMono.flatMap( fl -> {
             fl.addPoint( point );
             return repository.save( fl );
-        }).then();
+        });
     }
 
     public Mono<Void> usePoint( String phoneNumber, Long storeId, int point ){
@@ -64,6 +64,10 @@ public class RewardService {
 
     public Mono<RewardPoint> findByUserIdAndStoreId( long userId, long storeId ){
         return repository.findByUserIdAndStoreIdAndDeletedIsFalse( userId, storeId );
+    }
+
+    public Mono<RewardPoint> findByStoreIdAndPhoneNumber( long storeId, String phoneNumber ){
+        return repository.findByPhoneNumberAndStoreIdAndDeletedIsFalse( phoneNumber, storeId );
     }
 
 }

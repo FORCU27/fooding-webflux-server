@@ -32,7 +32,7 @@ public class RewardLogService {
         return repository.listCount( searchString, storeId, phoneNumber, status);
     }
 
-    public Mono<Long> create(Long storeId, String phoneNumber, int point, RewardStatus status, RewardType type, RewardChannel channel, String memo ){
+    public Mono<RewardLog> create(Long storeId, String phoneNumber, int point, RewardStatus status, RewardType type, RewardChannel channel, String memo ){
         RewardLog rewardLog = RewardLog.builder()
                 .storeId( storeId )
                 .phoneNumber( phoneNumber )
@@ -43,7 +43,6 @@ public class RewardLogService {
                 .memo( memo )
                 .build();
         return repository.save(rewardLog)
-                .map(RewardLog::getId)
                 .onErrorMap(ex -> new ApiException(ErrorCode.REWARD_LOG_CREATION_ERROR));
     }
 

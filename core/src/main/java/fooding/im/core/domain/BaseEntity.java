@@ -16,21 +16,21 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
     @CreatedBy
-    private Long createdBy;
+    protected Long createdBy;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @LastModifiedBy
-    private Long updatedBy;
+    protected Long updatedBy;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private boolean deleted;
+    protected boolean deleted;
 
-    private Long deletedBy;
+    protected Long deletedBy;
 
     public void delete(long deletedBy) {
         this.deleted = true;

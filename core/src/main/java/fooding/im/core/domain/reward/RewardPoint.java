@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+
+import java.time.LocalDateTime;
 
 @Table( name="reward_point" )
 @Getter
@@ -39,6 +42,7 @@ public class RewardPoint extends BaseEntity {
         this.userId = userId;
         this.point = point;
         this.memo = memo;
+        this.createdAt = LocalDateTime.now();
     }
 
     public void usePoint( int usePoint ){
